@@ -40,6 +40,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['rol
     }
 }
 
+// Handle user deletion
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_user_id'])) {
+    $delete_user_id = intval($_POST['delete_user_id']);
+    // Prevent admin from deleting themselves
+    if ($delete_user_id != $current_user['id']) {
+        try {
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+            $stmt = $conn->prepare("DELETE FROM users WHERE id=?");
+            $stmt->bind_param("i", $delete_user_id);
+            $stmt->execute();
+            $stmt->close();
+            $msg = "User deleted successfully.";
+            // Refresh users list after deletion
+            $users = $conn->query("SELECT * FROM users");
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1451) { // Foreign key constraint violation
+                $msg = "Cannot delete user: This user is referenced in other records (e.g., sales, purchases).";
+            } else {
+                $msg = "Error deleting user: " . $e->getMessage();
+            }
+        }
+    } else {
+        $msg = "You cannot delete your own account.";
+    }
+}
+
 // Fetch all users
 $users = $conn->query("SELECT * FROM users");
 ?>
@@ -131,8 +157,13 @@ $users = $conn->query("SELECT * FROM users");
                                         <option value="Cashier" <?= $user['role']=='Cashier'?'selected':'' ?>>Cashier</option>
                                     </select>
                                     <button type="submit" class="btn btn-sm btn-primary" style="width:auto">Change</button>
+                               <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <input type="hidden" name="delete_user_id" value="<?= $user['id'] ?>">
+                                <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
+                            </form>
                                 </div>
                             </form>
+                            
                             <?php else: ?>
                                 <span class="text-muted">Cannot change own role</span>
                             <?php endif; ?>

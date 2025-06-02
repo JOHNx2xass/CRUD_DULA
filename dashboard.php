@@ -262,7 +262,7 @@ $result = $conn->query("SELECT * FROM products");
                         </td>
                         <td>
                             <?php if ($row['image']): ?>
-                                <img src="<?= htmlspecialchars($row['image']) ?>" style="width:50px;">
+                                <img src="<?= htmlspecialchars($row['image']) ?>" style="width:40px; height:40px;">
                             <?php endif; ?>
                         </td>
                         <td>

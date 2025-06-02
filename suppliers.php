@@ -24,12 +24,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_supplier'])) {
 // Handle delete supplier
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    $stmt = $conn->prepare("DELETE FROM suppliers WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $stmt->close();
-    header("Location: suppliers.php");
-    exit();
+    try {
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        $stmt = $conn->prepare("DELETE FROM suppliers WHERE id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: suppliers.php");
+        exit();
+    } catch (mysqli_sql_exception $e) {
+        if ($e->getCode() == 1451) { // Foreign key constraint violation
+            echo "<div class='alert alert-danger text-center'>Cannot delete supplier: This supplier is referenced in purchases. Remove related purchases first.</div>";
+        } else {
+            echo "<div class='alert alert-danger text-center'>Error deleting supplier: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+    }
 }
 
 // Handle edit supplier
