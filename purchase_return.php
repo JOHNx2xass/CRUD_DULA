@@ -83,15 +83,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['return'])) {
 <div class="d-flex">
     <div class="sidebar position-fixed" style="width:220px;">
         <h2 class="text-center">BOOK</h2>
-        <a href="dashboard.php" class="active">Products</a>
+        <?php
+            $current = basename($_SERVER['PHP_SELF']);
+        ?>
+        <a href="dashboard.php" class="<?= $current == 'dashboard.php' ? 'active' : '' ?>">Products</a>
         <?php if ($_SESSION['role'] === 'Admin'): ?>
-            <a href="sales.php">Sales</a>
-            <a href="purchase.php">Purchases</a>
-            <a href="suppliers.php">Suppliers</a>
-            <a href="purchase_return.php">Returns</a>
-            <a href="settings.php">Settings</a>
+            <a href="sales.php" class="<?= $current == 'sales.php' ? 'active' : '' ?>">Sales</a>
+            <a href="purchase.php" class="<?= $current == 'purchase.php' ? 'active' : '' ?>">Purchases</a>
+            <a href="suppliers.php" class="<?= $current == 'suppliers.php' ? 'active' : '' ?>">Suppliers</a>
+            <a href="purchase_return.php" class="<?= $current == 'purchase_return.php' ? 'active' : '' ?>">Returns</a>
+            <a href="settings.php" class="<?= $current == 'settings.php' ? 'active' : '' ?>">Settings</a>
         <?php elseif ($_SESSION['role'] === 'Cashier'): ?>
-            <a href="sales.php">Sales</a>
+            <a href="sales.php" class="<?= $current == 'sales.php' ? 'active' : '' ?>">Sales</a>
         <?php endif; ?>
         <a href="logout.php">Logout</a>
     </div>

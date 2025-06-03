@@ -138,16 +138,19 @@ $result = $conn->query("SELECT * FROM products");
 <div class="d-flex">
     <div class="sidebar position-fixed" style="width:220px;">
         <h2 class="text-center" style="font-family:serif;">BOOK</h2>
+        <?php
+            $current = basename($_SERVER['PHP_SELF']);
+        ?>
         <?php if ($_SESSION['role'] === 'Admin'): ?>
-            <a href="dashboard.php" class="active">Products</a>
-            <a href="sales.php">Sales</a>
-            <a href="purchase.php">Purchases</a>
-            <a href="suppliers.php">Suppliers</a>
-            <a href="purchase_return.php">Returns</a>
-            <a href="settings.php">Settings</a>
+            <a href="dashboard.php" class="<?= $current == 'dashboard.php' ? 'active' : '' ?>">Products</a>
+            <a href="sales.php" class="<?= $current == 'sales.php' ? 'active' : '' ?>">Sales</a>
+            <a href="purchase.php" class="<?= $current == 'purchase.php' ? 'active' : '' ?>">Purchases</a>
+            <a href="suppliers.php" class="<?= $current == 'suppliers.php' ? 'active' : '' ?>">Suppliers</a>
+            <a href="purchase_return.php" class="<?= $current == 'purchase_return.php' ? 'active' : '' ?>">Returns</a>
+            <a href="settings.php" class="<?= $current == 'settings.php' ? 'active' : '' ?>">Settings</a>
             <a href="logout.php">Logout</a>
         <?php elseif ($_SESSION['role'] === 'Cashier'): ?>
-            <a href="sales.php" class="active">Sales</a>
+            <a href="sales.php" class="<?= $current == 'sales.php' ? 'active' : '' ?>">Sales</a>
             <a href="logout.php">Logout</a>
         <?php endif; ?>
     </div>
